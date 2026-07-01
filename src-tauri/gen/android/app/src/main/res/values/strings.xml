@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">"실무 계산기"</string>
+    <string name="main_activity_title">"실무 계산기"</string>
+</resources>

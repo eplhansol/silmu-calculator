@@ -1,0 +1,38 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Rust / Tauri 빌드 산출물
+/src-tauri/target/
+
+# 서명 키 — 절대 커밋 금지! (깃허브 비밀값으로만 관리)
+*.jks
+*.keystore
+**/keystore.properties
+
+# 안드로이드 빌드 캐시/산출물
+**/build/
+**/.gradle/
+**/.cxx/
+local.properties
