@@ -34,6 +34,9 @@
   .reset-btn { display: block; width: fit-content; margin: 22px auto 2px; padding: 13px 52px; border: 2px solid #e2e8f0; background: #fff; color: #718096; border-radius: 12px; font-size: 15px; font-weight: bold; cursor: pointer; transition: all .15s; }
   .reset-btn:hover { background: #fdf1f2; color: #e53e3e; border-color: #fbd5da; }
   .reset-btn:active { transform: scale(.97); }
+  .donate-btn { display: block; width: 100%; margin-top: 20px; padding: 12px; border: none; border-radius: 12px; background: #fee500; color: #3c1e1e; font-size: 14px; font-weight: bold; cursor: pointer; transition: all .15s; }
+  .donate-btn:hover { background: #ffd900; }
+  .donate-btn:active { transform: scale(.98); }
 
   .tabs { display: flex; background: #f1f3f9; border-radius: 12px; padding: 4px; margin-bottom: 16px; }
   .tab { flex: 1; text-align: center; padding: 9px; border-radius: 9px; font-size: 13px; cursor: pointer; color: #718096; transition: all .2s; user-select: none; }
@@ -109,6 +112,7 @@
       <h1>실무 계산기</h1>
       <p class="sub">회사 계산기 모음</p>
       <nav id="navList"></nav>
+      <button class="donate-btn" id="donateBtn">☕ 개발자 후원하기</button>
     </aside>
     <div class="overlay" id="overlay"></div>
     <main class="content card">
@@ -689,6 +693,17 @@
     btn.className = 'reset-btn'; btn.textContent = '🔄 초기화';
     btn.onclick = () => resetCalc(id);
     panel.appendChild(btn);
+  });
+
+  // 후원 버튼: 앱(Tauri)이면 외부 브라우저로, 웹이면 새 탭으로 카카오페이 열기
+  const DONATE_URL = 'https://qr.kakaopay.com/FVucVOoxg';
+  document.getElementById('donateBtn').addEventListener('click', async () => {
+    try {
+      const t = window.__TAURI__;
+      if (t?.opener?.openUrl) { await t.opener.openUrl(DONATE_URL); return; }
+      if (t?.core?.invoke) { await t.core.invoke('plugin:opener|open_url', { path: DONATE_URL }); return; }
+    } catch (e) { /* 폴백 */ }
+    window.open(DONATE_URL, '_blank');
   });
 
   renderSidebar(); selectCalc('vat');
