@@ -14,7 +14,7 @@ val tauriProperties = Properties().apply {
 }
 
 val keystoreProperties = Properties().apply {
-    val propFile = file("keystore.properties")
+    val propFile = rootProject.file("keystore.properties")
     if (propFile.exists()) {
         propFile.inputStream().use { load(it) }
     }
