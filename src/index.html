@@ -2,11 +2,11 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>실무 계산기</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #2d3748; }
+  body { font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); color: #2d3748; }
   .app { display: flex; gap: 20px; max-width: 1000px; margin: 0 auto; align-items: flex-start; }
   .card { background: #fff; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); padding: 24px; }
   .content { flex: 1; min-width: 0; margin-bottom: 20px; }
@@ -103,13 +103,13 @@
   @media (max-width: 720px) {
     .app { display: block; }
     .hamburger { display: block; }
-    .sidebar { position: fixed; left: 0; top: 0; height: 100%; width: 260px; border-radius: 0; z-index: 50; transform: translateX(-100%); transition: transform .25s; max-height: none; }
+    .sidebar { position: fixed; left: 0; top: 0; height: 100%; width: 260px; border-radius: 0; z-index: 50; transform: translateX(-100%); transition: transform .25s; max-height: none; padding-top: max(20px, env(safe-area-inset-top)); padding-bottom: max(20px, env(safe-area-inset-bottom)); }
     .sidebar.open { transform: none; }
     .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 40; }
     .overlay.show { display: block; }
   }
   @media (max-width: 560px) {
-    body { padding: 12px; }
+    body { padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
     .card { padding: 16px; border-radius: 16px; }
     .two-col { flex-direction: column; gap: 0; }
     thead { display: none; }
@@ -728,13 +728,13 @@
     } catch (e) { /* 폴백 */ }
     window.open(DONATE_URL, '_blank');
   }
-  $('donateBtn').addEventListener('click', () => {
+  $('donateBtn')?.addEventListener('click', () => {
     if (isMobileUA()) openDonateLink();
     else $('donateModal').classList.add('show');
   });
-  $('donateClose').addEventListener('click', () => $('donateModal').classList.remove('show'));
-  $('donateModal').addEventListener('click', e => { if (e.target.id === 'donateModal') $('donateModal').classList.remove('show'); });
-  $('donateOpenLink').addEventListener('click', openDonateLink);
+  $('donateClose')?.addEventListener('click', () => $('donateModal').classList.remove('show'));
+  $('donateModal')?.addEventListener('click', e => { if (e.target.id === 'donateModal') $('donateModal').classList.remove('show'); });
+  $('donateOpenLink')?.addEventListener('click', openDonateLink);
 
   renderSidebar(); selectCalc('vat');
 </script>
