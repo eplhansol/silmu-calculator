@@ -59,6 +59,12 @@
   .big-input { width: 100%; padding: 14px 44px 14px 14px; font-size: 18px; border: 2px solid #e2e8f0; border-radius: 12px; text-align: right; outline: none; transition: border .2s; background: #fff; color: #2d3748; }
   .big-input:focus { border-color: #5a67d8; }
   input[type=date].big-input { text-align: left; font-size: 16px; }
+  .date-parts { display: flex; align-items: center; gap: 8px; }
+  .date-parts .big-input { padding: 14px 8px; text-align: center; -moz-appearance: textfield; }
+  .date-parts .big-input::-webkit-outer-spin-button, .date-parts .big-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .date-parts .yr { flex: 1.5; }
+  .date-parts .md { flex: 1; }
+  .date-sep { font-size: 15px; color: #718096; flex-shrink: 0; }
   .unit { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #a0aec0; font-size: 15px; }
   .two-col { display: flex; gap: 12px; }
   .two-col .field { flex: 1; }
@@ -409,7 +415,13 @@
     <section class="calc-panel hidden" id="panel-age">
       <div class="panel-head"><h2 class="sec-title">나이 계산</h2><button class="fav-btn" data-fav="age">☆</button></div>
       <p class="sec-desc">생년월일로 만 나이·연 나이·세는나이</p>
-      <div class="field"><label>생년월일</label><div class="input-wrap"><input type="date" id="ageBirth" class="big-input"></div></div>
+      <div class="field"><label>생년월일 (직접 입력)</label>
+        <div class="date-parts">
+          <input type="number" id="ageY" class="big-input yr" inputmode="numeric" placeholder="1990" min="1900" max="2100"><span class="date-sep">년</span>
+          <input type="number" id="ageM" class="big-input md" inputmode="numeric" placeholder="3" min="1" max="12"><span class="date-sep">월</span>
+          <input type="number" id="ageD" class="big-input md" inputmode="numeric" placeholder="15" min="1" max="31"><span class="date-sep">일</span>
+        </div>
+      </div>
       <div class="result">
         <div class="rrow total"><span class="label-t">만 나이 (공식)</span><span class="right"><span class="num" id="ageIntl">-</span><button class="copy-mini" data-t="ageIntl">복사</button></span></div>
         <div class="rrow"><span class="label-t">연 나이</span><span class="right"><span class="num" id="ageYear">-</span></span></div>
@@ -532,6 +544,7 @@
     el.value = el.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'); recalcAll();
   }));
   document.querySelectorAll('input[type=date]').forEach(el => el.addEventListener('change', recalcAll));
+  ['ageY', 'ageM', 'ageD'].forEach(id => $(id).addEventListener('input', recalcAll));
   document.querySelectorAll('.copy-mini').forEach(btn => btn.addEventListener('click', () => {
     const raw = $(btn.dataset.t).textContent, numOnly = raw.replace(/[^0-9,.\-]/g, '');
     copyText(numOnly, `복사됨: ${numOnly}`);
@@ -777,12 +790,14 @@
   // ---------- 전체 재계산 ----------
   // ---------- 나이 ----------
   function calcAge() {
-    const v = $('ageBirth').value;
     const ids = ['ageIntl', 'ageYear', 'ageKor', 'ageDday', 'ageDays'];
-    if (!v) { ids.forEach(id => $(id).textContent = '-'); return; }
-    const p = v.split('-'); const b = new Date(+p[0], +p[1] - 1, +p[2]);
+    const y = parseInt($('ageY').value, 10), m = parseInt($('ageM').value, 10), d = parseInt($('ageD').value, 10);
+    const clear = () => ids.forEach(id => $(id).textContent = '-');
+    if (!y || !m || !d || y < 1900 || m < 1 || m > 12 || d < 1 || d > 31) { clear(); return; }
+    const b = new Date(y, m - 1, d);
+    if (b.getFullYear() !== y || b.getMonth() !== m - 1 || b.getDate() !== d) { clear(); return; } // 2/30 같은 잘못된 날짜
     const today = new Date(); today.setHours(0, 0, 0, 0);
-    if (b > today) { ids.forEach(id => $(id).textContent = '-'); return; }
+    if (b > today) { clear(); return; }
     const ty = today.getFullYear();
     let intl = ty - b.getFullYear();
     const before = (today.getMonth() < b.getMonth()) || (today.getMonth() === b.getMonth() && today.getDate() < b.getDate());
